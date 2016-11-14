@@ -125,11 +125,23 @@
 	</aside>
 </section>
 
-<section data-bespoke-id="data-handling">
+<section data-bespoke-id="data-format">
 	<div class="content">
-		<h1>Database Data Handling</h1>
+		<h1>Database Data Format</h1>
 		<p><b>Generic</b> (service & rules agnostic) representation <b>in persistent layer</b></p>
-		<p><b>Meaningful</b> (relational) <b>within in-memory engine</b></p>
+		<p><b>Meaningful</b> (relational) <b>within in-memory DBJS engine</b></p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="data-propagation">
+	<div class="content">
+		<h1>Database Data Propagation</h1>
+		<p><b>Live data channel</b> - Client depending on logged-in user and curent application receives constant updates towards specified fragment of data</p>
+		<p><b>On demand channel</b> - When traversing large structures, applicable records are propagated on demand</p>
+		<hr />
+		<p>Most of the data propagated into application is loaded as DBJS records</p>
 	</div>
 	<aside>
 	</aside>
@@ -138,7 +150,341 @@
 <section data-bespoke-id="dbjs">
 	<div class="content">
 		<h1>DBJS: In-memory Database Engine</h1>
-		<p>Main idea: Handle natural JavaScript objects, let changes be automatically (behind the scenes) saved persistently</p>
+		<h2>Work with JS structures naturally</h2>
+		<h2>Let data be stored and updated behind the scenes automatically</h2>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-demo">
+	<div class="content">
+		<h1>DBJS: Data handling</h1>
+		<pre><code>var user = new db.User({ firstName: "John", lastName: "Smith" });
+user.firstName; // John;
+user.fullName; // "John Smith"
+user.__id__; // Persistent ID: d12313213</code></pre>
+	<p>Affer server is restarted and data loaded:</p>
+	<pre><code>var user = db.User.getById('d12313213');
+user.fullName</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-definitions">
+	<div class="content">
+		<h1>DBJS: Data definitions</h1>
+		<p>Class-like:</p>
+		<pre><code>db.Object.extend('User', {
+  firstName: { type: db.String, required: true },
+  lastName: { type: db.String, required: true }
+});</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-descriptors">
+	<div class="content">
+		<h1>DBJS: Property descriptor properties</h1>
+		<ul>
+			<li><b>type</b> - Type</li>
+			<li><b>label</b> - Field Label</li>
+			<li><b>required</b> - Is field required?</li>
+			<li><b>multiple</b> - Is multiple?</li>
+			<li><b>nested</b> - Is a namespace object?</li>
+		</ul>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-type-descriptors">
+	<div class="content">
+		<h1>DBJS: Property descriptor<br />(type specific) properties</h1>
+		<ul>
+			<li><b>min</b> - (String, Number, DateTime), minimum allowed value or length</li>
+			<li><b>max</b> - (String, Number, DateTime), maximum allowed value or length</li>
+			<li><b>pattern</b> - (String) specific string format</li>
+			<li><b>step</b> - (Number, DateTime) allowed granularity</li>
+		</ul>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-nesteds">
+	<div class="content">
+		<h1>DBJS: Namespaced definitions</h1>
+		<pre><code>db.User.prototype.defineProperties({
+  address: { type: db.Object, nested: true }
+});
+
+db.User.prototype.address.defineProperties({
+  street: { type: db.String },
+  zipCode: { type: db.String, pattern: /^\d{2}-\d{3}$/ }
+});
+
+user.address.street = "Puławska 67";
+user.address.zipCoe = "02-595";</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-computed">
+	<div class="content">
+		<h1>DBJS: Computed Properties</h1>
+		<pre><code>db.User.prototype.defineProperties({
+  fullName: { type: db.String, value: function () {
+    return this.firstName + " " + this.lastName;
+  }
+});
+
+user.fullName; // "John Smith"</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-observable">
+	<div class="content">
+		<h1>DBJS: Observable Properties</h1>
+		<p>Each property is observable</p>
+		<p>We can retrieve an <b>observable</b> for given property via:</p>
+		<ul>
+			<li><code>object.getObservable</code> method</li>
+			<li><code>object._{propertyName}</code> shortcut (used for convience in views</li>
+		</ul>
+		<pre><code>user._fullName.on('change', function () {
+  console.log("fullName changed");
+});
+user.fullName; // "John Smith"
+user.firstName = "George"; // fullName changed
+user.fullName; // "George Smith"</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-observable-quirks-1">
+	<div class="content">
+		<h1>DBJS: Observable getter properties quirks #1</h1>
+		<p>Only <code>this.{propertyName}</code> notation is observed automatically</p>
+		<p>For any others we need to register obseravbles using <code>_observe</code> (receive via first getter argument) function</p>
+		<pre><code>db.User.prototype.defineProperties({
+  fullName: { type: db.String, value: function (_observe) {
+    var fullName = this.firstName + " " + this.lastName;
+    if (_observe(this.address._city) === 'San Salvador') {
+      fullName += " (from San Salvador)";
+    }
+    return fullName;
+  }
+});</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-observable-quirks-2">
+	<div class="content">
+		<h1>DBJS: Observable getter properties quirks #2</h1>
+		<p>If getter is used to resolve either</p>
+		<ul>
+			<li>Some rules (requirements, costs etc.) in a guide</li>
+			<li>Visibility of some field in a form</li>
+		</ul>
+		<p>It means it's also run in legacy layer</p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-observable-quirks-2b">
+	<div class="content">
+		<h1>DBJS: Observable getter properties quirks #2 (continued)</h1>
+		<p>In such case we need to conditionally decide on wether we can use observables or not:</p>
+		<pre><code>db.User.prototype.defineProperties({
+  fullName: { type: db.String, value: function (_observe) {
+    var fullName = this.firstName + " " + this.lastName;
+    var city = this._get ? _observe(this.address._city) : this.address.city;
+    if (city === 'San Salvador') {
+      fullName += " (from San Salvador)";
+    }
+    return fullName;
+  }
+});</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-eregistrations">
+	<div class="content">
+		<h1>DBJS: eRegistrations model</h1>
+		<p>All eRegistrations services and rules are configured once with DBJS definitions</p>
+		<p><a href="/eregistrations-business-process.png" download="eregistrations-business-process.png"><img src="/eregistrations-business-process-preview.png" width="320" /></a></p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-types-basic">
+	<div class="content">
+		<h1>DBJS: Basic types</h1>
+		<p>Defined in DBJS project itself</p>
+		<ul>
+			<li><code>Boolean</code></li>
+			<li><code>Number</code></li>
+			<li><code>String</code></li>
+			<li><code>DateTime</code></li>
+			<li><code>RegExp</code></li>
+			<li><code>Function</code></li>
+			<li><code>Object</code></li>
+		</ul>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-types-extensions">
+	<div class="content">
+		<h1>DBJS: Common type extensions</h1>
+		<p>Defined in DBJS-EXT Project</p>
+		<ul>
+			<li><b><code>Number</code></b>: <code>Integer</code>, <code>UInteger</code>, <code>Percentage</code>, <code>Currency</code>, <code>USDollar</code>, <code>SqureMeters</code></li>
+			<li><b><code>String</code></b>: <code>StringLine</code>, <code>Email</code>, <code>Gender</code> (enum), <code>Password</code>, <code>Url</code></li>
+			<li><b><code>DateTime</code></b>: <code>Date</code></li>
+			<li><b><code>Object</code></b>: <code>File</code></li>
+		</ul>
+		<hr />
+		<p>DBJS-EXT also provides utils to define Enum types</p>
+		<pre><code>var Gender = db.StringLine.createEnum('Gender', ['F', 'M'], {
+  F: { label: "Female" },
+  M: { label: "Male" }
+})</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-eregistrations-types">
+	<div class="content">
+		<h1>DBJS: Common eRegistrations types</h1>
+		<ul>
+			<li><b><code>Person</code></b>: Any human entity</li>
+			<li><b><code>User</code></b>: System user account (derives from <code>Person</code></li>
+			<li><b><code>Document</code></b>: Certificate or requirement or ..</li>
+			<li><b><code>Institution</code></b>: Institutin involved into process</li>
+			<li><b><code>BusinessProcess</code></b>: Service (a file), registration process</li>
+			<li><b><code>Registration</code></b>: Specific registration</li>
+		</ul>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-eregistrations-types-2">
+	<div class="content">
+		<h1>DBJS: Common eRegistrations types (continued)</h1>
+		<ul>
+			<li><b><code>Requirement</code></b>: Requirement (usually document, sometimes group of documents, or choice of documents</li>
+			<li><b><code>RequirementUpload</code></b>: Specific document we require user to upload</li>
+			<li><b><code>Cost</code></b>: Specific cost</li>
+			<li><b><code>PaymentReceiptUpoad</code></b>: Receipt we require user to upload (applies to set of costs)</li>
+			<li><b><code>ProcessingStep</code></b>: Part B official step (e.g. <i>Revision</i> or <i>Withdrawal</i>)</li>
+		</ul>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs-eregistrations-form-types">
+	<div class="content">
+		<h1>DBJS: eRegistrations Form types</h1>
+		<ul>
+			<li><b><code>FormSection</code></b>: Single fieldset</li>
+			<li><b><code>FormEntitiesTable</code></b>: Table of entities (e.g. <i>Partners</i>, <i>Branches</i>)</li>
+			<li><b><code>FormSectionGroup</code></b>: Group of at least two different form sections (of any kind)</li>
+			<li><b><code>FormSectionUpdate</code></b>: Used in <i>Update</i> services, section that exposes two views: <i>current</i> and <i>proposed update</i> for any section kind</li>
+		</ul>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="views">
+	<div class="content">
+		<h1>Views configuration</h1>
+		<p>Configured as extensible tree of nodes</p>
+		<p><b>base.js</b></p>
+		<pre><code>exports.body = function () {
+  header(h1("Hello World"));
+
+  main({ id: 'main' }); // Intentionally empty
+
+  footer(p("© no-one ever 2016"));
+};
+</code></pre>
+		<p><b>main.js</b></p>
+		<pre><code>exports._parent = require('./base');
+
+exports.main = function () {
+  p("Some content");
+};</code></pre>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="views-diagram">
+	<div class="content">
+		<h1>Views configuration</h1>
+		<p>Excerpt of eRegistrations view tree</p>
+		<p><a href="/view-engine.png"><img src="/view-engine.png" width="760" /></a></p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="views-notes">
+	<div class="content">
+		<h1>Views</h1>
+		<p><b>Public</b> pages and <b>system</b> pages are configured independently</p>
+		<p><b>Public</b> pages are configured in <b>plain HTML</b></p>
+		<p><b>System</b> pages are configured with <b>domjs</b></p>
+		<p>There's <b>one</b> view tree <b>for all system applications</b></p>
+		<p>URL to view mappings are decided per application in <code>app/routes.js</code> modules</p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="forms">
+	<div class="content">
+		<h1>Forms</h1>
+		<p>All data changes invoked by user, come from <b>regular form submissions</b></p>
+		<p>Every new form configuration, should come with <b>controller</b> configuration</p>
+		<p>Controllers are configured at <code>app/controller</code> path</p>
+		<hr />
+		<p>Default configuration is as plain as</p>
+		<pre><code>exports['action-url'] = true;</code></pre>
+		<p>Otherwise <code>validate</code> and <code>submit</code> steps should be configured.
+		<p>Currently documented at <a href="https://github.com/egovernment/eregistrations/blob/master/documentation/controllers.md">eregistrations/controllers.md</a></p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="development-workflow">
+	<div class="content">
+		<h1>Development Workflow</h1>
+		<p>Each task should be  reported with clear description as <b>Github <i>Issue</i></b></p>
+		<p>Each task should be developed on its <b>dedicated branch</b></p>
+		<p>Finalized work should be published as a <b><i>Pull Request</i></b> (in most cases <i>Issue</i> is converted to <i>Pull Request</i></p>
+		<p>Proposed changes should be <b>revised</b> by other programmer</b>
+		<p>Only <b>well tested</b>, <b>lint compliant</b>, <b>test passing</b> and <b>approved by revisor</b> work is fine to be merged into master branch</p>
 	</div>
 	<aside>
 	</aside>
