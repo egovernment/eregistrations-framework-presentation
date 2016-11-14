@@ -55,9 +55,10 @@
 	</aside>
 </section>
 
-<section data-bespoke-id="architecture" class="bespoke-slide-center">
+<section data-bespoke-id="architecture">
 	<div class="content">
 		<h1>System architecture</h1>
+		<p><b>Enviroments</b> that run <b>processes</b> with multiple <b>services</b></p>
 	</div>
 	<aside>
 	</aside>
@@ -81,11 +82,63 @@
 	</aside>
 </section>
 
-<section data-bespoke-id="http-server">
+<section data-bespoke-id="context-routing">
 	<div class="content">
-		<h1>HTTP Server</h1>
-		<p>Configured with <b>Connect</b> middlewares at<p>
-		<h2><b>/server/services/http-server.js</b></h2>
+		<h1>User context routing</h1>
+		<ul>
+			<li>Public pages</li>
+			<li>Business registrator  pages</li>
+			<li>Official (revisor, processor) pages</li>
+			<li>Users Admin pages</li>
+		</ul>
+		<hr />
+		<h2>Applications</h2>
+		<p>Located at <code>/apps</code></p>
+		<p><b>Each application has distinct URL tree</b></p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="authentication">
+	<div class="content">
+		<h1>Authentication</h1>
+		<p>Traditional: Email & Password based</p>
+		<p>- Passwords are stored as bcrypt hashes</p>
+		<p>- Session are maintained through signed HTTP cookies</p>
+		<hr />
+		<p>User account is assigned with roles at user creation</p>
+		<p>On basis if currently selected role application is resolved</p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="get-post-routing">
+	<div class="content">
+		<h1>HTTP GET & POST Routing</h1>
+		<p><b>GET</b> and <b>POST</b> URL trees are configured independently</p>
+		<p>Each <b>application</b> has independent (<b>GET</b> and <b>POST</b>) URL tree</p>
+		<p>Controllers are configured with <b>controller-router</b> (express-like) environment agnostic url router)</p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="data-handling">
+	<div class="content">
+		<h1>Database Data Handling</h1>
+		<p><b>Generic</b> (service & rules agnostic) representation <b>in persistent layer</b></p>
+		<p><b>Meaningful</b> (relational) <b>within in-memory engine</b></p>
+	</div>
+	<aside>
+	</aside>
+</section>
+
+<section data-bespoke-id="dbjs">
+	<div class="content">
+		<h1>DBJS: In-memory Database Engine</h1>
+		<p>Main idea: Handle natural JavaScript objects, let changes be automatically (behind the scenes) saved persistently</p>
 	</div>
 	<aside>
 	</aside>
