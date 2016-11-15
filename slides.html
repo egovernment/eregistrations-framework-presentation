@@ -29,7 +29,7 @@
 		<h1>Written in ECMAScript 5</h1>
 		<h2>(and shimmable <b>ECMAScript2015+</b>)</h2>
 		<hr />
-		<p>Old browsers (ECMAScript 3) get <b>server-side rendered HTML</b></p>
+		<p class="substep" data-order="1">Old browsers (ECMAScript 3) get <b>server-side rendered HTML</b></p>
 	</div>
 	<aside>
 	</aside>
@@ -85,6 +85,7 @@
 <section data-bespoke-id="context-routing">
 	<div class="content">
 		<h1>User context routing</h1>
+		<h2>Applications</h2>
 		<ul>
 			<li>Public pages</li>
 			<li>Business registrator  pages</li>
@@ -92,7 +93,6 @@
 			<li>Users Admin pages</li>
 		</ul>
 		<hr />
-		<h2>Applications</h2>
 		<p>Located at <code>/apps</code></p>
 		<p><b>Each application has distinct URL tree</b></p>
 	</div>
@@ -104,11 +104,11 @@
 	<div class="content">
 		<h1>Authentication</h1>
 		<p>Traditional: Email & Password based</p>
-		<p>- Passwords are stored as bcrypt hashes</p>
-		<p>- Session are maintained through signed HTTP cookies</p>
-		<hr />
-		<p>User account is assigned with roles at user creation</p>
-		<p>On basis if currently selected role application is resolved</p>
+		<p class="substep" data-order="1">- Passwords are stored as bcrypt hashes</p>
+		<p class="substep" data-order="2">- Session are maintained through signed HTTP cookies</p>
+		<hr  class="substep" data-order="2" />
+		<p class="substep" data-order="3">User account is assigned with roles at user creation</p>
+		<p class="substep" data-order="4">On basis of currently selected role application is resolved</p>
 	</div>
 	<aside>
 	</aside>
@@ -118,8 +118,8 @@
 	<div class="content">
 		<h1>HTTP GET & POST Routing</h1>
 		<p><b>GET</b> and <b>POST</b> URL trees are configured independently</p>
-		<p>Each <b>application</b> has independent (<b>GET</b> and <b>POST</b>) URL tree</p>
-		<p>Controllers are configured with <b>controller-router</b> (express-like) environment agnostic url router)</p>
+		<p class="substep" data-order="1">Each <b>application</b> has independent (<b>GET</b> and <b>POST</b>) URL tree</p>
+		<p class="substep" data-order="2">Controllers are configured with <b>controller-router</b> (express-like, environment agnostic url router)</p>
 	</div>
 	<aside>
 	</aside>
@@ -129,7 +129,7 @@
 	<div class="content">
 		<h1>Database Data Format</h1>
 		<p><b>Generic</b> (service & rules agnostic) representation <b>in persistent layer</b></p>
-		<p><b>Meaningful</b> (relational) <b>within in-memory DBJS engine</b></p>
+		<p class="substep" data-order="1"><b>Meaningful</b> (relational) <b>within in-memory DBJS engine</b></p>
 	</div>
 	<aside>
 	</aside>
@@ -138,10 +138,12 @@
 <section data-bespoke-id="data-propagation">
 	<div class="content">
 		<h1>Database Data Propagation</h1>
-		<p><b>Live data channel</b> - Client depending on logged-in user and curent application receives constant updates towards specified fragment of data</p>
-		<p><b>On demand channel</b> - When traversing large structures, applicable records are propagated on demand</p>
-		<hr />
-		<p>Most of the data propagated into application is loaded as DBJS records</p>
+		<h2>Live data channel</h2>
+		<p>Depending on <b>logged-in user</b> and <b>resolved application</b> client receives constant updates towards specified range of data</p>
+		<h2 class="substep" data-order="2">On demand channel</h2>
+		<p class="substep" data-order="2">When traversing large structures, applicable records are propagated on demand (via Ajax backed requests)</p>
+		<hr  class="substep" data-order="3" />
+		<p class="substep" data-order="3">Most of the data propagated into application is loaded as DBJS records</p>
 	</div>
 	<aside>
 	</aside>
@@ -150,8 +152,8 @@
 <section data-bespoke-id="dbjs">
 	<div class="content">
 		<h1>DBJS: In-memory Database Engine</h1>
-		<h2>Work with JS structures naturally</h2>
-		<h2>Let data be stored and updated behind the scenes automatically</h2>
+		<h2>Allows to work with JS structures naturally</h2>
+		<h2>Data is stored and updated behind the scenes automatically</h2>
 	</div>
 	<aside>
 	</aside>
@@ -164,8 +166,8 @@
 user.firstName; // John;
 user.fullName; // "John Smith"
 user.__id__; // Persistent ID: d12313213</code></pre>
-	<p>Affer server is restarted and data loaded:</p>
-	<pre><code>var user = db.User.getById('d12313213');
+	<p class="substep" data-order="1">Affer server is restarted and data loaded:</p>
+	<pre class="substep" data-order="1"><code>var user = db.User.getById('d12313213');
 user.fullName</code></pre>
 	</div>
 	<aside>
@@ -190,10 +192,10 @@ user.fullName</code></pre>
 		<h1>DBJS: Property descriptor properties</h1>
 		<ul>
 			<li><b>type</b> - Type</li>
-			<li><b>label</b> - Field Label</li>
-			<li><b>required</b> - Is field required?</li>
-			<li><b>multiple</b> - Is multiple?</li>
-			<li><b>nested</b> - Is a namespace object?</li>
+			<li class="substep" data-order="1"><b>label</b> - Field Label</li>
+			<li class="substep" data-order="2"><b>required</b> - Is field required?</li>
+			<li class="substep" data-order="3"><b>multiple</b> - Is multiple?</li>
+			<li class="substep" data-order="4"><b>nested</b> - Is a namespace object?</li>
 		</ul>
 	</div>
 	<aside>
@@ -205,9 +207,9 @@ user.fullName</code></pre>
 		<h1>DBJS: Property descriptor<br />(type specific) properties</h1>
 		<ul>
 			<li><b>min</b> - (String, Number, DateTime), minimum allowed value or length</li>
-			<li><b>max</b> - (String, Number, DateTime), maximum allowed value or length</li>
-			<li><b>pattern</b> - (String) specific string format</li>
-			<li><b>step</b> - (Number, DateTime) allowed granularity</li>
+			<li class="substep" data-order="2"><b>max</b> - (String, Number, DateTime), maximum allowed value or length</li>
+			<li class="substep" data-order="3"><b>pattern</b> - (String) specific string format</li>
+			<li class="substep" data-order="4"><b>step</b> - (Number, DateTime) allowed granularity</li>
 		</ul>
 	</div>
 	<aside>
@@ -270,15 +272,30 @@ user.fullName; // "George Smith"</code></pre>
 
 <section data-bespoke-id="dbjs-observable-quirks-1">
 	<div class="content">
-		<h1>DBJS: Observable getter properties quirks #1</h1>
+		<h1>DBJS: Observable computed properties quirks #1</h1>
 		<p>Only <code>this.{propertyName}</code> notation is observed automatically</p>
-		<p>For any others we need to register obseravbles using <code>_observe</code> (receive via first getter argument) function</p>
-		<pre><code>db.User.prototype.defineProperties({
+		<p class="substep" data-order="1">For any others we need to register obseravbles using <code>_observe</code> (receive via first getter argument) function</p>
+		<div class="substep" data-order="2" data-action="remove">
+			<pre class="substep" data-order="1"><code>db.User.prototype.defineProperties({
+  fullName: { type: db.String, value: function () {
+    var fullName = this.firstName + " " + this.lastName;
+
+    if (this.address.city === 'San Salvador') {
+      fullName += " (from San Salvador)";
+    }
+
+    return fullName;
+  }
+});</code></pre>
+		</div>
+		<pre class="substep" data-order="2"  data-action="insert"><code>db.User.prototype.defineProperties({
   fullName: { type: db.String, value: function (_observe) {
     var fullName = this.firstName + " " + this.lastName;
+
     if (_observe(this.address._city) === 'San Salvador') {
       fullName += " (from San Salvador)";
     }
+
     return fullName;
   }
 });</code></pre>
@@ -289,10 +306,10 @@ user.fullName; // "George Smith"</code></pre>
 
 <section data-bespoke-id="dbjs-observable-quirks-2">
 	<div class="content">
-		<h1>DBJS: Observable getter properties quirks #2</h1>
-		<p>If getter is used to resolve either</p>
+		<h1>DBJS: Observable computed properties quirks #2</h1>
+		<p>If computed property is used to resolve either</p>
 		<ul>
-			<li>Some rules (requirements, costs etc.) in a guide</li>
+			<li>Some rules (requirements, costs etc.) used in a guide</li>
 			<li>Visibility of some field in a form</li>
 		</ul>
 		<p>It means it's also run in legacy layer</p>
@@ -303,8 +320,8 @@ user.fullName; // "George Smith"</code></pre>
 
 <section data-bespoke-id="dbjs-observable-quirks-2b">
 	<div class="content">
-		<h1>DBJS: Observable getter properties quirks #2 (continued)</h1>
-		<p>In such case we need to conditionally decide on wether we can use observables or not:</p>
+		<h1>DBJS: Observable computed properties quirks #2 (continued)</h1>
+		<p>In such case we need to conditionally decide on whether we can refer to observables in their bodies or not:</p>
 		<pre><code>db.User.prototype.defineProperties({
   fullName: { type: db.String, value: function (_observe) {
     var fullName = this.firstName + " " + this.lastName;
@@ -323,7 +340,7 @@ user.fullName; // "George Smith"</code></pre>
 <section data-bespoke-id="dbjs-eregistrations">
 	<div class="content">
 		<h1>DBJS: eRegistrations model</h1>
-		<p>All eRegistrations services and rules are configured once with DBJS definitions</p>
+		<p>All eRegistrations services and rules are configured in one place with DBJS definitions</p>
 		<p><a href="/eregistrations-business-process.png" download="eregistrations-business-process.png"><img src="/eregistrations-business-process-preview.png" width="320" /></a></p>
 	</div>
 	<aside>
@@ -354,13 +371,13 @@ user.fullName; // "George Smith"</code></pre>
 		<p>Defined in DBJS-EXT Project</p>
 		<ul>
 			<li><b><code>Number</code></b>: <code>Integer</code>, <code>UInteger</code>, <code>Percentage</code>, <code>Currency</code>, <code>USDollar</code>, <code>SqureMeters</code></li>
-			<li><b><code>String</code></b>: <code>StringLine</code>, <code>Email</code>, <code>Gender</code> (enum), <code>Password</code>, <code>Url</code></li>
-			<li><b><code>DateTime</code></b>: <code>Date</code></li>
-			<li><b><code>Object</code></b>: <code>File</code></li>
+			<li class="substep" data-order="2"><b><code>String</code></b>: <code>StringLine</code>, <code>Email</code>, <code>Gender</code> (enum), <code>Password</code>, <code>Url</code></li>
+			<li class="substep" data-order="3"><b><code>DateTime</code></b>: <code>Date</code></li>
+			<li class="substep" data-order="4"><b><code>Object</code></b>: <code>File</code></li>
 		</ul>
-		<hr />
-		<p>DBJS-EXT also provides utils to define Enum types</p>
-		<pre><code>var Gender = db.StringLine.createEnum('Gender', ['F', 'M'], {
+		<hr class="substep" data-order="5" />
+		<p class="substep" data-order="5">DBJS-EXT also provides utils to define Enum types</p>
+		<pre class="substep" data-order="5"><code>var Gender = db.StringLine.createEnum('Gender', ['F', 'M'], {
   F: { label: "Female" },
   M: { label: "Male" }
 })</code></pre>
@@ -374,11 +391,11 @@ user.fullName; // "George Smith"</code></pre>
 		<h1>DBJS: Common eRegistrations types</h1>
 		<ul>
 			<li><b><code>Person</code></b>: Any human entity</li>
-			<li><b><code>User</code></b>: System user account (derives from <code>Person</code></li>
-			<li><b><code>Document</code></b>: Certificate or requirement or ..</li>
-			<li><b><code>Institution</code></b>: Institutin involved into process</li>
-			<li><b><code>BusinessProcess</code></b>: Service (a file), registration process</li>
-			<li><b><code>Registration</code></b>: Specific registration</li>
+			<li class="substep" data-order="1"><b><code>User</code></b>: System user account (derives from <code>Person</code>)</li>
+			<li class="substep" data-order="2"><b><code>Document</code></b>: Represents certificate, requirement or any other document entity</li>
+			<li class="substep" data-order="3"><b><code>Institution</code></b>: Institution involved into any process</li>
+			<li class="substep" data-order="4"><b><code>BusinessProcess</code></b>: Service (a file), registration process (can be multi-registration process)</li>
+			<li class="substep" data-order="5"><b><code>Registration</code></b>: Specific registration</li>
 		</ul>
 	</div>
 	<aside>
@@ -389,11 +406,11 @@ user.fullName; // "George Smith"</code></pre>
 	<div class="content">
 		<h1>DBJS: Common eRegistrations types (continued)</h1>
 		<ul>
-			<li><b><code>Requirement</code></b>: Requirement (usually document, sometimes group of documents, or choice of documents</li>
-			<li><b><code>RequirementUpload</code></b>: Specific document we require user to upload</li>
-			<li><b><code>Cost</code></b>: Specific cost</li>
-			<li><b><code>PaymentReceiptUpoad</code></b>: Receipt we require user to upload (applies to set of costs)</li>
-			<li><b><code>ProcessingStep</code></b>: Part B official step (e.g. <i>Revision</i> or <i>Withdrawal</i>)</li>
+			<li><b><code>Requirement</code></b>: Requirement (usually document, sometimes group of documents, or choice of documents)</li>
+			<li class="substep" data-order="1"><b><code>RequirementUpload</code></b>: Specific document we require user to upload</li>
+			<li class="substep" data-order="2"><b><code>Cost</code></b>: Specific cost</li>
+			<li class="substep" data-order="3"><b><code>PaymentReceiptUpoad</code></b>: Receipt we require user to upload (applies to set of costs)</li>
+			<li class="substep" data-order="4"><b><code>ProcessingStep</code></b>: Part B official step (e.g. <i>Revision</i> or <i>Withdrawal</i>)</li>
 		</ul>
 	</div>
 	<aside>
@@ -441,7 +458,7 @@ exports.main = function () {
 <section data-bespoke-id="views-diagram">
 	<div class="content">
 		<h1>Views configuration</h1>
-		<p>Excerpt of eRegistrations view tree</p>
+		<p>Excerpt from eRegistrations view tree</p>
 		<p><a href="/view-engine.png"><img src="/view-engine.png" width="760" /></a></p>
 	</div>
 	<aside>
@@ -452,10 +469,10 @@ exports.main = function () {
 	<div class="content">
 		<h1>Views</h1>
 		<p><b>Public</b> pages and <b>system</b> pages are configured independently</p>
-		<p><b>Public</b> pages are configured in <b>plain HTML</b></p>
-		<p><b>System</b> pages are configured with <b>domjs</b></p>
-		<p>There's <b>one</b> view tree <b>for all system applications</b></p>
-		<p>URL to view mappings are decided per application in <code>app/routes.js</code> modules</p>
+		<p class="substep" data-order="1"><b>Public</b> pages are configured in <b>plain HTML</b></p>
+		<p class="substep" data-order="2"><b>System</b> pages are configured with <b>domjs</b></p>
+		<p class="substep" data-order="3">There's <b>one</b> view tree <b>for all system applications</b></p>
+		<p class="substep" data-order="4">URL to view mappings are decided per application in <code>app/routes.js</code> modules</p>
 	</div>
 	<aside>
 	</aside>
@@ -465,13 +482,13 @@ exports.main = function () {
 	<div class="content">
 		<h1>Forms</h1>
 		<p>All data changes invoked by user, come from <b>regular form submissions</b></p>
-		<p>Every new form configuration, should come with <b>controller</b> configuration</p>
-		<p>Controllers are configured at <code>app/controller</code> path</p>
-		<hr />
-		<p>Default configuration is as plain as</p>
-		<pre><code>exports['action-url'] = true;</code></pre>
-		<p>Otherwise <code>validate</code> and <code>submit</code> steps should be configured.
-		<p>Currently documented at <a href="https://github.com/egovernment/eregistrations/blob/master/documentation/controllers.md">eregistrations/controllers.md</a></p>
+		<p class="substep" data-order="1">Every new form configuration, should come with <b>controller</b> configuration</p>
+		<p class="substep" data-order="2">Controllers are configured at <code>app/controller</code> path</p>
+		<hr class="substep" data-order="3" />
+		<p class="substep" data-order="3">Default configuration is as plain as</p>
+		<pre class="substep" data-order="3"><code>exports['action-url'] = true;</code></pre>
+		<p class="substep" data-order="3">Otherwise <code>validate</code> and <code>submit</code> steps should be configured.
+		<p class="substep" data-order="3">Currently documented at <a href="https://github.com/egovernment/eregistrations/blob/master/documentation/controllers.md">eregistrations/controllers.md</a></p>
 	</div>
 	<aside>
 	</aside>
@@ -481,10 +498,10 @@ exports.main = function () {
 	<div class="content">
 		<h1>Development Workflow</h1>
 		<p>Each task should be  reported with clear description as <b>Github <i>Issue</i></b></p>
-		<p>Each task should be developed on its <b>dedicated branch</b></p>
-		<p>Finalized work should be published as a <b><i>Pull Request</i></b> (in most cases <i>Issue</i> is converted to <i>Pull Request</i></p>
-		<p>Proposed changes should be <b>revised</b> by other programmer</b>
-		<p>Only <b>well tested</b>, <b>lint compliant</b>, <b>test passing</b> and <b>approved by revisor</b> work is fine to be merged into master branch</p>
+		<p class="substep" data-order="2">Each task should be developed on its <b>dedicated branch</b></p>
+		<p class="substep" data-order="3">Finalized work should be published as a <b><i>Pull Request</i></b> (in most cases <i>Issue</i> is converted to <i>Pull Request</i></p>
+		<p class="substep" data-order="4">Proposed changes should be <b>revised</b> by other programmer</b>
+		<p class="substep" data-order="5">Only <b>well tested</b>, <b>lint compliant</b>, <b>test passing</b> and <b>approved by revisor</b> work is fine to be merged into master branch</p>
 	</div>
 	<aside>
 	</aside>
