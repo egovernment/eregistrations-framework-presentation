@@ -58,7 +58,7 @@ p, ul, ol, td, th {
 	color: #3b3b3b;
 }
 p.img { text-align: center; margin-bottom: 0; }
-code .code-error, code .code-error .hljs-keyword { color: red; }
+code .code-error, code .code-error .hljs-keyword, code .code-error .hljs-comment { color: red; }
 img.diagram {
 	background: rgba(255, 255, 255, 0.5);
 	padding: 40px;

@@ -168,7 +168,7 @@ user.fullName; // "John Smith"
 user.__id__; // Persistent ID: d12313213</code></pre>
 	<p class="substep" data-order="1">Affer server is restarted and data loaded:</p>
 	<pre class="substep" data-order="1"><code>var user = db.User.getById('d12313213');
-user.fullName</code></pre>
+user.fullName; // "John Smith"</code></pre>
 	</div>
 	<aside>
 	</aside>
@@ -194,8 +194,8 @@ user.fullName</code></pre>
 			<li><b>type</b> - Type</li>
 			<li class="substep" data-order="1"><b>label</b> - Field Label</li>
 			<li class="substep" data-order="2"><b>required</b> - Is field required?</li>
-			<li class="substep" data-order="3"><b>multiple</b> - Is multiple?</li>
-			<li class="substep" data-order="4"><b>nested</b> - Is a namespace object?</li>
+			<li class="substep" data-order="3"><b>multiple</b> - Is multiple? (will result with <code>Set</code> instance)</li>
+			<li class="substep" data-order="4"><b>nested</b> - Is a namespace object? (will result with an object)</li>
 		</ul>
 	</div>
 	<aside>
@@ -206,8 +206,8 @@ user.fullName</code></pre>
 	<div class="content">
 		<h1>DBJS: Property descriptor<br />(type specific) properties</h1>
 		<ul>
-			<li><b>min</b> - (String, Number, DateTime), minimum allowed value or length</li>
-			<li class="substep" data-order="2"><b>max</b> - (String, Number, DateTime), maximum allowed value or length</li>
+			<li><b>min</b> - (String, Number, DateTime), minimum allowed value or length (in case of strings)</li>
+			<li class="substep" data-order="2"><b>max</b> - (String, Number, DateTime), maximum allowed value or length (in case of strings)</li>
 			<li class="substep" data-order="3"><b>pattern</b> - (String) specific string format</li>
 			<li class="substep" data-order="4"><b>step</b> - (Number, DateTime) allowed granularity</li>
 		</ul>
@@ -245,6 +245,15 @@ user.address.zipCoe = "02-595";</code></pre>
 });
 
 user.fullName; // "John Smith"</code></pre>
+		<p class="substep" data-order="1"><b>Parent objects access</b></p>
+		<pre class="substep" data-order="1"><code>db.User.prototype.nestedA.nestedB.defineProperties({
+  someComputed: { value: function () {
+    this.master; // user (object at the top of nesteds chain)
+    this.owner; // user.nestedA (parent object)
+  }
+});</code></pre>
+		<p class="substep" data-order="2"><b>Database access</b></p>
+		<pre class="substep" data-order="2"><code>this.database.User; // etc</code></pre>
 	</div>
 	<aside>
 	</aside>
@@ -280,7 +289,7 @@ user.fullName; // "George Smith"</code></pre>
   fullName: { type: db.String, value: function () {
     var fullName = this.firstName + " " + this.lastName;
 
-    if (this.address.city === 'San Salvador') {
+    if (this.address.city === 'San Salvador') { <span class="code-error">// Won't work!</span>
       fullName += " (from San Salvador)";
     }
 
@@ -321,11 +330,13 @@ user.fullName; // "George Smith"</code></pre>
 <section data-bespoke-id="dbjs-observable-quirks-2b">
 	<div class="content">
 		<h1>DBJS: Observable computed properties quirks #2 (continued)</h1>
-		<p>In such case we need to conditionally decide on whether we can refer to observables in their bodies or not:</p>
+		<p>In such case we need to conditionally decide on whether we can refer to observables in their bodies or not.</p>
+		<p>Convention is to rely on <code>this._get</code> check:</p>
 		<pre><code>db.User.prototype.defineProperties({
   fullName: { type: db.String, value: function (_observe) {
     var fullName = this.firstName + " " + this.lastName;
-    var city = this._get ? _observe(this.address._city) : this.address.city;
+    var city = this._get ? _observe(this.address._city)
+      : this.address.city;
     if (city === 'San Salvador') {
       fullName += " (from San Salvador)";
     }
